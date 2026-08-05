@@ -30,13 +30,14 @@ public class PostController {
     @GetMapping("/{id}")
     public PostOutputDto get(@PathVariable UUID id) {
         var post = postService.findById(id);
-        if (post == null) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        if (post.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return post.get().getPostOutpostDto();
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public PostOutputDto create(@RequestBody @Valid CreatePostDto dto) {
         return postService.create(dto).getPostOutpostDto();
     }

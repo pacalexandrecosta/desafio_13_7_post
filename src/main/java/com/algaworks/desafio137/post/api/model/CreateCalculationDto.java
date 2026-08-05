@@ -7,8 +7,8 @@ import java.util.UUID;
 
 public record CreateCalculationDto(
         @NotNull
-        UUID id,
+        UUID postId,
 
         @NotBlank
-        String body) {
+        String postBody) {
 }

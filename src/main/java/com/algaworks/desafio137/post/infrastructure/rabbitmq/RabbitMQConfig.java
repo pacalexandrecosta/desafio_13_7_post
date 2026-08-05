@@ -18,6 +18,7 @@ public class RabbitMQConfig {
 
 
     public static final String POST_PROCESSING_Q = "text-processor-service.post-processing.v1.q";
+    public static final String POST_PROCESSING_DLQ = "text-processor-service.post-processing.v1.dlq";
 
     public static final String POST_PROCESSING_RESULT_Q = "post-service.post-processing-result.v1.q";
     public static final String POST_PROCESSING_RESULT_DLQ = "post-service.post-processing-result.v1.dlq";
@@ -32,6 +33,25 @@ public class RabbitMQConfig {
     @Bean
     public JacksonJsonMessageConverter jacksonJsonMessageConverter(JsonMapper jsonMapper) {
         return new JacksonJsonMessageConverter(jsonMapper);
+    }
+
+    @Bean
+    public Queue createPostProcessingQueue() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("x-dead-letter-exchange", "");
+        args.put("x-dead-letter-routing-key", POST_PROCESSING_DLQ);
+
+        return QueueBuilder
+                .durable(POST_PROCESSING_Q)
+                .withArguments(args)
+                .build();
+    }
+
+    @Bean
+    public Queue createPostProcessingDeadLetterQueue() {
+        return QueueBuilder
+                .durable(POST_PROCESSING_DLQ)
+                .build();
     }
 
     @Bean
